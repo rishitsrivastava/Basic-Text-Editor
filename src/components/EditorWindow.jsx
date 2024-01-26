@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Editor, EditorState, RichUtils, ContentState, convertToRaw } from 'draft-js'
+import React, { useEffect, useState } from 'react'
+import { Editor, EditorState, RichUtils, ContentState, convertToRaw, convertFromRaw } from 'draft-js'
 // import 'draft-js/dist/Draft.css'
 
 export default function EditorWindow() {
@@ -7,6 +7,15 @@ export default function EditorWindow() {
     const [editorState, setEditorState] = useState(() => {
         EditorState.createEmpty();
     })
+
+    useEffect(() => {
+        const savedContent = localStorage.getItem('editorContent');
+        if(savedContent) {
+            const rawContent = JSON.parse(savedContent);
+            const contentState = convertFromRaw(rawContent);
+            setEditorState(EditorState.createWithContent(contentState));
+        }
+    }, [])
 
     const handlePreviousInput = (input, editorState) => {
         if(input === '#' && editorState.getSelection().getStartOffset() === 0) {
@@ -34,7 +43,7 @@ export default function EditorWindow() {
         }
 
         else if(input === '*' && editorState.getSelection().getStartOffset() === 1) {
-            
+
         }
     }
     
